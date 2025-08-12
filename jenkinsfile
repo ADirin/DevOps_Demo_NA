@@ -1,19 +1,15 @@
 pipeline {
     agent any
-environment {
-        // Define Docker Hub credentials ID
+
+    environment {
         DOCKERHUB_CREDENTIALS_ID = 'Docker_Hub'
-        // Define Docker Hub repository name
         DOCKERHUB_REPO = 'amirdirin/imagnam2'
-        // Define Docker image tag
         DOCKER_IMAGE_TAG = 'latest_v1'
     }
 
-tools {
-        // These names must match the ones you configure under
-        // "Manage Jenkins" → "Global Tool Configuration"
-          jdk 'JAVA_HOME'
-         maven 'Maven3'
+    tools {
+        jdk 'JAVA_HOME'   // Must match Global Tool Configuration
+        maven 'Maven3'    // Must match Global Tool Configuration
     }
 
     stages {
@@ -21,7 +17,7 @@ tools {
             steps {
                 bat 'echo %PATH%'
                 bat 'java -version'
-                bat '"C:\\Program Files\\apache-maven-3.8.8\\bin\\mvn.cmd" -version'
+                bat 'mvn -version'
             }
         }
 
@@ -33,19 +29,19 @@ tools {
 
         stage('Build') {
             steps {
-                bat '"C:\\Program Files\\apache-maven-3.8.8\\bin\\mvn.cmd" clean install'
+                bat 'mvn clean install'
             }
         }
 
         stage('Test') {
             steps {
-                bat '"C:\\Program Files\\apache-maven-3.8.8\\bin\\mvn.cmd" test'
+                bat 'mvn test'
             }
         }
 
         stage('Code Coverage') {
             steps {
-                bat '"C:\\Program Files\\apache-maven-3.8.8\\bin\\mvn.cmd" jacoco:report'
+                bat 'mvn jacoco:report'
             }
         }
 
@@ -60,10 +56,12 @@ tools {
                 jacoco()
             }
         }
-        
-       stage('Push Docker Image to Docker Hub') {
+
+        stage('Push Docker Image to Docker Hub') {
+            environment {
+                PATH = "C:\\Program Files\\Docker\\Docker\\resources\\bin;${PATH}"
+            }
             steps {
-                // Push Docker image to Docker Hub
                 script {
                     docker.withRegistry('https://index.docker.io/v1/', DOCKERHUB_CREDENTIALS_ID) {
                         docker.image("${DOCKERHUB_REPO}:${DOCKER_IMAGE_TAG}").push()
@@ -71,6 +69,5 @@ tools {
                 }
             }
         }
-
     }
 }
