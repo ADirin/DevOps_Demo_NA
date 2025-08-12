@@ -1,31 +1,52 @@
 pipeline {
     agent any
+
+    tools {
+        // These names must match the ones you configure under
+        // "Manage Jenkins" → "Global Tool Configuration"
+        jdk 'JDK17'
+        maven 'Maven3.8.8'
+    }
+
     stages {
+        stage('Print Environment') {
+            steps {
+                bat 'echo %PATH%'
+                bat 'java -version'
+                bat 'mvn -version'
+            }
+        }
+
         stage('Checkout') {
             steps {
-                git 'https://github.com/ADirin/DevOps_Demo_NA.git'
+                git branch: 'master', url: 'https://github.com/ADirin/DevOps_Demo_NA.git'
             }
         }
+
         stage('Build') {
             steps {
-               bat 'mvn clean install'
+                bat 'mvn clean install'
             }
         }
+
         stage('Test') {
             steps {
                 bat 'mvn test'
             }
         }
+
         stage('Code Coverage') {
             steps {
                 bat 'mvn jacoco:report'
             }
         }
+
         stage('Publish Test Results') {
             steps {
                 junit '**/target/surefire-reports/*.xml'
             }
         }
+
         stage('Publish Coverage Report') {
             steps {
                 jacoco()
