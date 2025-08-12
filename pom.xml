@@ -22,6 +22,7 @@
         </dependency>
     </dependencies>
     <build>
+        <finalName>myapp</finalName>
         <plugins>
             <!-- JaCoCo plugin for code coverage -->
             <plugin>
@@ -43,6 +44,22 @@
                     </execution>
                 </executions>
             </plugin>
+
+
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.4.1</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>Myapp</mainClass> <!-- Correct main class -->
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 </project>
