@@ -5,6 +5,7 @@ pipeline {
         DOCKERHUB_CREDENTIALS_ID = 'Docker_Hub'
         DOCKERHUB_REPO = 'amirdirin/imagenam2'
         DOCKER_IMAGE_TAG = 'latest'
+        PATH = "C:\\Program Files\\Docker\\Docker\\resources\\bin;${env.PATH}"
     }
 
     tools {
