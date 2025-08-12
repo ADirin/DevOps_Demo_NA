@@ -1,34 +1,28 @@
 pipeline {
     agent any
     stages {
-        stage('Checkout') {
+        stage('check') {
             steps {
-                git 'https://github.com/ADirin/DevOps_Demo_NA.git'
+                git branch: 'master', url: 'https://github.com/ADirin/DevOps_Demo_NA.git'
             }
         }
-        stage('Build') {
+        stage('build') {
             steps {
-               bat 'mvn clean install'
+                bat '"C:\\Program Files\\apache-maven-3.8.8\\bin\\mvn.cmd" clean install'
             }
         }
-        stage('Test') {
+        stage('Test & Coverage') {
             steps {
-                bat 'mvn test'
+                bat '"C:\\Program Files\\apache-maven-3.8.8\\bin\\mvn.cmd" test jacoco:report'
             }
-        }
-        stage('Code Coverage') {
-            steps {
-                bat 'mvn jacoco:report'
-            }
-        }
-        stage('Publish Test Results') {
-            steps {
-                junit '**/target/surefire-reports/*.xml'
-            }
-        }
-        stage('Publish Coverage Report') {
-            steps {
-                jacoco()
+            post {
+                always {
+                    junit 'target/surefire-reports/*.xml'
+                    jacoco execPattern: '**/target/jacoco.exec',
+                           classPattern: '**/target/classes',
+                           sourcePattern: '**/src/main/java',
+                           exclusionPattern: '**/test/**'
+                }
             }
         }
     }
