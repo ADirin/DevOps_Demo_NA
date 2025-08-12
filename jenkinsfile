@@ -1,31 +1,45 @@
 pipeline {
     agent any
+
     stages {
+        stage('Print Environment') {
+            steps {
+                bat 'echo %PATH%'
+                bat 'java -version'
+                bat '"C:\\Program Files\\apache-maven-3.8.8\\bin\\mvn.cmd" -version'
+            }
+        }
+
         stage('Checkout') {
             steps {
-                git 'https://github.com/ADirin/DevOps_Demo_NA.git'
+                git branch: 'master', url: 'https://github.com/ADirin/DevOps_Demo_NA.git'
             }
         }
+
         stage('Build') {
             steps {
-               bat 'mvn clean install'
+                bat '"C:\\Program Files\\apache-maven-3.8.8\\bin\\mvn.cmd" clean install'
             }
         }
+
         stage('Test') {
             steps {
-                bat 'mvn test'
+                bat '"C:\\Program Files\\apache-maven-3.8.8\\bin\\mvn.cmd" test'
             }
         }
+
         stage('Code Coverage') {
             steps {
-                bat 'mvn jacoco:report'
+                bat '"C:\\Program Files\\apache-maven-3.8.8\\bin\\mvn.cmd" jacoco:report'
             }
         }
+
         stage('Publish Test Results') {
             steps {
                 junit '**/target/surefire-reports/*.xml'
             }
         }
+
         stage('Publish Coverage Report') {
             steps {
                 jacoco()
