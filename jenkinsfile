@@ -3,8 +3,8 @@ pipeline {
 
     environment {
         DOCKERHUB_CREDENTIALS_ID = 'Docker_Hub'
-        DOCKERHUB_REPO = 'amirdirin/imagnam2'
-        DOCKER_IMAGE_TAG = 'latest_v1'
+        DOCKERHUB_REPO = 'amirdirin/imagenam2'
+        DOCKER_IMAGE_TAG = 'latest'
     }
 
     tools {
